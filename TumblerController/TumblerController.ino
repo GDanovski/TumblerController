@@ -23,8 +23,9 @@
 #include "DigitalDisplay.hpp"
 #include "TimeCalculator.hpp"
 
+FlashDrv flashDrv{};
 DigitalDisplay digitalDisplay{};
-TimeCalculator timeCalculator{};
+TimeCalculator timeCalculator{flashDrv};
 
 void setup() {
   Serial.begin(115200);
@@ -35,7 +36,10 @@ void setup() {
   Serial.print(timeCalculator.getDays());
   Serial.print("\n");
   delay(1000);
-  timeCalculator.setDays(20);
+
+  if (timeCalculator.getDays() == 0){
+    timeCalculator.setDays(20);
+  }
 }
 
 void loop() {
