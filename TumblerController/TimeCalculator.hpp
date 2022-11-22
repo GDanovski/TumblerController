@@ -20,69 +20,76 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#ifndef DIGITALDISPLAY_HPP
-#define DIGITALDISPLAY_HPP
+#ifndef TimeCalculator_HPP
+#define TimeCalculator_HPP
 
-class DigitalDisplay {
+class TimeCalculator {
   public:
     /**
-       @brief Construct a new DigitalDisplay object
+       @brief Construct a new TimeCalculator object
 
     */
-    DigitalDisplay();
+    TimeCalculator();
     /**
        @brief Delete default copy constructor
 
     */
-    DigitalDisplay(DigitalDisplay&) = delete;
+    TimeCalculator(TimeCalculator&) = delete;
     /**
        @brief Delete default move constructor
 
     */
-    DigitalDisplay(DigitalDisplay&&) = delete;
+    TimeCalculator(TimeCalculator&&) = delete;
     /**
-       @brief Destroy the DigitalDisplay object
+       @brief Destroy the TimeCalculator object
 
     */
-    ~DigitalDisplay() = default;
+    ~TimeCalculator() = default;
 
     //Operators
     /**
        @brief Delete default copy assignment operator
 
-       @return DigitalDisplay&
+       @return TimeCalculator&
     */
-    DigitalDisplay& operator=(DigitalDisplay&) = delete;
+    TimeCalculator& operator=(TimeCalculator&) = delete;
     /**
        @brief Delete default move assignment operator
 
-       @return DigitalDisplay&
+       @return TimeCalculator&
     */
-    DigitalDisplay& operator=(DigitalDisplay&&) = delete;
+    TimeCalculator& operator=(TimeCalculator&&) = delete;
 
     /**
-       @brief Display int value to the display
+       @brief Set how many days the tumbler should be active
 
-       @param value int value to be shown (max = 99, min = 00)
+       @param days how many days the tumbler should be active
     */
-    void showValue(int value);
+    void setDays(int days);
+
+    /**
+       @brief Get how many days the tumbler should be active
+
+       @return how many days the tumbler should be active
+    */
+    int getDays() const;
+
+    /**
+       @brief Recalculate hours and
+
+       @return true if the time is larger then 0
+    */
+    bool calculate();
 
   private:
-    static const int timeToShowDigit_ms = 10;
+    static const unsigned long kMsInHour = 1000u; // 1000u * 60u * 60u;
+    static const unsigned long kHourInDay = 2; //24u;
 
-    /**
-       @brief Set all pins to high/low
+    int _days{0};
+    int _hours{0};
+    unsigned long _lastTime_ms{0u};
 
-       @param value int state of all pins
-    */
-    void setAllPins(bool value);
-
-    /**
-       @brief Set a digit on the display
-
-       @param value int value to be shown (max = 9, min = 0)
-    */
-    void setDigit(int value);
+    void reset() { asm volatile ("jmp 0"); }
 };
 
-#endif // !DIGITALDISPLAY_HPP
+#endif // !TimeCalculator_HPP
