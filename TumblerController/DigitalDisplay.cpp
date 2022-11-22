@@ -50,19 +50,19 @@ void DigitalDisplay::setAllPins(bool value) {
   digitalWrite(DigitalDisplayConfig::pinG, value);
 }
 
-void DigitalDisplay::showValue(int value, int time_ms) {
+void DigitalDisplay::showValue(int value) {
   int minor = value % 10;
   int major = (value - minor) / 10;
 
   setDigit(minor);
   digitalWrite(DigitalDisplayConfig::pinDS1, LOW);
   digitalWrite(DigitalDisplayConfig::pinDS2, HIGH);
-  delay(time_ms);
+  delay(timeToShowDigit_ms);
 
   setDigit(major);
   digitalWrite(DigitalDisplayConfig::pinDS1, HIGH);
   digitalWrite(DigitalDisplayConfig::pinDS2, LOW);
-  delay(time_ms);
+  delay(timeToShowDigit_ms);
 }
 
 void DigitalDisplay::setDigit(int value) {

@@ -20,25 +20,48 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include "DigitalDisplay.hpp"
+#include <Arduino.h>
 #include "TimeCalculator.hpp"
 
-DigitalDisplay digitalDisplay{};
-TimeCalculator timeCalculator{};
-
-void setup() {
-  Serial.begin(115200);
-  while (!Serial) {
-    ; // wait for serial port to connect. Needed for native USB port only
-  }
-  Serial.print("Start days: ");
-  Serial.print(timeCalculator.getDays());
-  Serial.print("\n");
-  delay(1000);
-  timeCalculator.setDays(20);
+TimeCalculator::TimeCalculator() {
+  _days = 0;
+  _hours = 0;
+  _lastTime_ms = millis();
 }
 
-void loop() {
-  bool timerRunning = timeCalculator.calculate();
-  digitalDisplay.showValue(timeCalculator.getDays());
+void TimeCalculator::setDays(int days) {
+  if (days > 99) days = 99;
+
+  _days = days;
+  _hours = 0;
+  _lastTime_ms = millis();
+}
+
+int TimeCalculator::getDays() const {
+  return _days;
+}
+
+bool TimeCalculator::calculate() {
+  if ((_hours > 0) || (_days > 0)) {
+    const unsigned long time_ms = millis();
+    const unsigned long elapsed_time_ms = _lastTime_ms + kMsInHour;
+
+    if (_lastTime_ms > time_ms) {
+      reset();  // Reset if overflow is detected
+    }
+
+    if (time_ms > elapsed_time_ms) {
+      _lastTime_ms = time_ms;
+
+      _hours++;
+      if (_hours >= kHourInDay) {
+        _hours = 0;
+        if (_days > 0) {
+          _days--;
+        }
+      }
+    }
+  }
+
+  return (_hours > 0) || (_days > 0);
 }
