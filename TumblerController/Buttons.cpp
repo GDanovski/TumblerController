@@ -87,7 +87,13 @@ void Buttons::checkButtons(int days) {
     }
 
     while(isStartLongPressed()){
-      // add start/pause
+      if(_timeCalculator.getDays() > 0){
+        _timeCalculator.setDays(0);
+        _tumblerStarted = false;
+        _flashDrv.store(kActiveTumblingAddress, _tumblerStarted);
+        return;
+      }
+      
       isStartPressed();
       Serial.print("Start button stucked\n");
       delay(1000);
