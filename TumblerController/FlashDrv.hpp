@@ -25,7 +25,7 @@
 
 static const int kPassHoursFlashAddress = 0;
 static const int kPassDaysFlashAddress = 1;
-static const int kActiveTumbling = 2;
+static const int kActiveTumblingAddress = 2;
 
 class FlashDrv {
   public:

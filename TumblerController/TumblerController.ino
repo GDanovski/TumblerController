@@ -20,12 +20,15 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+#include "FlashDrv.hpp"
 #include "DigitalDisplay.hpp"
 #include "TimeCalculator.hpp"
+#include "Buttons.hpp"
 
 FlashDrv flashDrv{};
 DigitalDisplay digitalDisplay{};
 TimeCalculator timeCalculator{flashDrv};
+Buttons buttons{timeCalculator, flashDrv};
 
 void setup() {
   Serial.begin(115200);
@@ -36,13 +39,18 @@ void setup() {
   Serial.print(timeCalculator.getDays());
   Serial.print("\n");
   delay(1000);
-
-  if (timeCalculator.getDays() == 0){
-    timeCalculator.setDays(20);
-  }
 }
 
 void loop() {
+  int days = timeCalculator.getDays();
   bool timerRunning = timeCalculator.calculate();
-  digitalDisplay.showValue(timeCalculator.getDays());
+  digitalDisplay.showValue(days);
+  buttons.checkButtons(days);
+
+  if (buttons.isTumblerStarted() && timerRunning){
+    // start motor
+  }
+  else {
+    // stop motor
+  }
 }
