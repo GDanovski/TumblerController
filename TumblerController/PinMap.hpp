@@ -20,29 +20,41 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include "DigitalDisplay.hpp"
+#ifndef PINMAP_HPP
+#define PINMAP_HPP
 
-int value = 0;
-DigitalDisplay digitalDisplay{};
+/**
+   @brief DigitalDisplay configuration
 
-void setup() {
-  Serial.begin(115200);
-  while (!Serial) {
-    ; // wait for serial port to connect. Needed for native USB port only
-  }
-  Serial.print("Start days: ");
-  Serial.print(1);
-  Serial.print("\n");
-  delay(1000);
-}
+  pins:
+    A
+   ---
+F |   | B
+  | G |
+   ---
+E |   | C
+  |   |
+   ---
+    D
 
-void loop() {
-  Serial.print("sended\n");
-  static const int timeToShowDigit_ms = 10;
+LED:
+DS1 -- B
+ C -- A
+ E -- F
+DP -- G
+ D -- DS1
+*/
+struct DigitalDisplayConfig {
+  static const int pinDS1 = 2;  ///< pin select first digit display (minor)
+  static const int pinDS2 = 3;  ///< pin select secound digit display (major)
+  static const int pinA = 4;    ///< pin A
+  static const int pinB = 5;    ///< pin B
+  static const int pinC = 6;    ///< pin C
+  static const int pinD = 7;    ///< pin D
+  static const int pinE = 8;    ///< pin E
+  static const int pinF = 9;    ///< pin F
+  static const int pinG = 10;   ///< pin G
+  static const int pinDP = 0;   ///< pin dot postatic const int - not used
+};
 
-  for (int i = 0; i < 50; i++) {
-    digitalDisplay.showValue(value, timeToShowDigit_ms);
-  }
-  value++;
-  if (value == 99) value = 0;
-}
+#endif // !PINMAP_HPP
