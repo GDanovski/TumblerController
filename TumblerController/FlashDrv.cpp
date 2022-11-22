@@ -21,55 +21,15 @@
 // SOFTWARE.
 
 #include <Arduino.h>
-#include "TimeCalculator.hpp"
+#include <EEPROM.h>
+#include "FlashDrv.hpp"
 
-TimeCalculator::TimeCalculator(FlashDrv& flashDrv) : _flashDrv(flashDrv) {
-  _days = _flashDrv.read(kPassDaysFlashAddress);
-  _hours = _flashDrv.read(kPassHoursFlashAddress);
-  _lastTime_ms = millis();
+FlashDrv::FlashDrv() {}
+
+void FlashDrv::store(int addr, int value) {
+  EEPROM.write(addr, value);
 }
 
-void TimeCalculator::setDays(int days) {
-  if (days > 99) days = 99;
-
-  _days = days;
-  _hours = 0;
-  _lastTime_ms = millis();
-
-  storeToFlash();
-}
-
-int TimeCalculator::getDays() const {
-  return _days;
-}
-
-bool TimeCalculator::calculate() {
-  if ((_hours > 0) || (_days > 0)) {
-    const unsigned long time_ms = millis();
-    const unsigned long elapsed_time_ms = _lastTime_ms + kMsInHour;
-
-    if (_lastTime_ms > time_ms) {
-      reset();  // Reset if overflow is detected
-    }
-
-    if (time_ms > elapsed_time_ms) {
-      _lastTime_ms = time_ms;
-
-      _hours++;
-      if (_hours >= kHourInDay) {
-        _hours = 0;
-        if (_days > 0) {
-          _days--;
-        }
-      }
-      storeToFlash();
-    }
-  }
-
-  return (_hours > 0) || (_days > 0);
-}
-
-void TimeCalculator::storeToFlash() {
-  _flashDrv.store(kPassDaysFlashAddress, _days);
-  _flashDrv.store(kPassHoursFlashAddress, _hours);
+int FlashDrv::read(int addr) {
+  return static_cast<int>(EEPROM.read(addr));
 }

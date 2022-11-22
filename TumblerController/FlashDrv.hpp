@@ -20,82 +20,65 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#ifndef TIMECALCULATOR_HPP
-#define TIMECALCULATOR_HPP
+#ifndef FlashDrv_HPP
+#define FlashDrv_HPP
 
-#include "FlashDrv.hpp"
+static const int kPassHoursFlashAddress = 0;
+static const int kPassDaysFlashAddress = 1;
+static const int kActiveTumbling = 2;
 
-class TimeCalculator {
+class FlashDrv {
   public:
     /**
-       @brief Construct a new TimeCalculator object
+       @brief Construct a new FlashDrv object
 
     */
-    explicit TimeCalculator(FlashDrv& flashDrv);
+    FlashDrv();
     /**
        @brief Delete default copy constructor
 
     */
-    TimeCalculator(TimeCalculator&) = delete;
+    FlashDrv(FlashDrv&) = delete;
     /**
        @brief Delete default move constructor
 
     */
-    TimeCalculator(TimeCalculator&&) = delete;
+    FlashDrv(FlashDrv&&) = delete;
     /**
-       @brief Destroy the TimeCalculator object
+       @brief Destroy the FlashDrv object
 
     */
-    ~TimeCalculator() = default;
+    ~FlashDrv() = default;
 
     //Operators
     /**
        @brief Delete default copy assignment operator
 
-       @return TimeCalculator&
+       @return FlashDrv&
     */
-    TimeCalculator& operator=(TimeCalculator&) = delete;
+    FlashDrv& operator=(FlashDrv&) = delete;
     /**
        @brief Delete default move assignment operator
 
-       @return TimeCalculator&
+       @return FlashDrv&
     */
-    TimeCalculator& operator=(TimeCalculator&&) = delete;
+    FlashDrv& operator=(FlashDrv&&) = delete;
 
     /**
-       @brief Set how many days the tumbler should be active
+       @brief Set value to flash
 
-       @param days how many days the tumbler should be active
+       @param value value to be stored
+       @param addr address in flash
     */
-    void setDays(int days);
+    void store(int addr, int value);
 
     /**
-       @brief Get how many days the tumbler should be active
+       @brief Get value from flash
 
-       @return how many days the tumbler should be active
+       @param addr address in flash
     */
-    int getDays() const;
+    int read(int addr);
 
-    /**
-       @brief Recalculate hours and
-
-       @return true if the time is larger then 0
-    */
-    bool calculate();
-
-  private:
-    static const unsigned long kMsInHour = 1000u; // 1000u * 60u * 60u;
-    static const unsigned long kHourInDay = 2; //24u;
-
-    FlashDrv& _flashDrv;
-    
-    int _days{0};
-    int _hours{0};
-    unsigned long _lastTime_ms{0u};
-
-    void reset() { asm volatile ("jmp 0"); }
-
-    void storeToFlash();
 };
 
-#endif // !TIMECALCULATOR_HPP
+#endif // !FlashDrv_HPP
