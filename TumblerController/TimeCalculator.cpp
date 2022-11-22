@@ -30,13 +30,12 @@ TimeCalculator::TimeCalculator(FlashDrv& flashDrv) : _flashDrv(flashDrv) {
 }
 
 void TimeCalculator::setDays(int days) {
-  if (days > 99) days = 99;
+  if (days > kMaxDays) days = kMaxDays;
+  if (days < 0) days = 0;
 
   _days = days;
   _hours = 0;
   _lastTime_ms = millis();
-
-  storeToFlash();
 }
 
 int TimeCalculator::getDays() const {
@@ -49,6 +48,8 @@ bool TimeCalculator::calculate() {
     const unsigned long elapsed_time_ms = _lastTime_ms + kMsInHour;
 
     if (_lastTime_ms > time_ms) {
+      storeToFlash();
+      delay(1000);
       reset();  // Reset if overflow is detected
     }
 

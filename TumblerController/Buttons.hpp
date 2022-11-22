@@ -20,84 +20,68 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#ifndef TIMECALCULATOR_HPP
-#define TIMECALCULATOR_HPP
+#ifndef Buttons_HPP
+#define Buttons_HPP
 
 #include "FlashDrv.hpp"
+#include "TimeCalculator.hpp"
 
-class TimeCalculator {
+class Buttons {
   public:
     /**
-       @brief Construct a new TimeCalculator object
+       @brief Construct a new Buttons object
 
     */
-    explicit TimeCalculator(FlashDrv& flashDrv);
+    Buttons(TimeCalculator& timeCalculator, FlashDrv& flashDrv);
     /**
        @brief Delete default copy constructor
 
     */
-    TimeCalculator(TimeCalculator&) = delete;
+    Buttons(Buttons&) = delete;
     /**
        @brief Delete default move constructor
 
     */
-    TimeCalculator(TimeCalculator&&) = delete;
+    Buttons(Buttons&&) = delete;
     /**
-       @brief Destroy the TimeCalculator object
+       @brief Destroy the Buttons object
 
     */
-    ~TimeCalculator() = default;
+    ~Buttons() = default;
 
     //Operators
     /**
        @brief Delete default copy assignment operator
 
-       @return TimeCalculator&
+       @return Buttons&
     */
-    TimeCalculator& operator=(TimeCalculator&) = delete;
+    Buttons& operator=(Buttons&) = delete;
     /**
        @brief Delete default move assignment operator
 
-       @return TimeCalculator&
+       @return Buttons&
     */
-    TimeCalculator& operator=(TimeCalculator&&) = delete;
+    Buttons& operator=(Buttons&&) = delete;
 
-    /**
-       @brief Set how many days the tumbler should be active
+    void checkButtons(int days);
 
-       @param days how many days the tumbler should be active
-    */
-    void setDays(int days);
-
-    /**
-       @brief Get how many days the tumbler should be active
-
-       @return how many days the tumbler should be active
-    */
-    int getDays() const;
-
-    /**
-       @brief Recalculate hours and
-
-       @return true if the time is larger then 0
-    */
-    bool calculate();
-
-    void storeToFlash();
+    bool isTumblerStarted() const;
 
   private:
-    static const int kMaxDays = 99;
-    static const unsigned long kMsInHour = 1000u; // 1000u * 60u * 60u;
-    static const unsigned long kHourInDay = 5; //24u;
+    static const int startCounterMax = 6;
+    static const int buttonsCounterMax = 20;
 
+    TimeCalculator& _timeCalculator;
     FlashDrv& _flashDrv;
     
-    int _days{0};
-    int _hours{0};
-    unsigned long _lastTime_ms{0u};
+    int buttonsCounter = 0;
+    int startCounter = 0;
+    bool _tumblerStarted = false;
 
-    void reset() { asm volatile ("jmp 0"); }
-
+    bool isIncrementPressed() const;
+    bool isDecrementPressed() const;
+    bool isStartPressed();
+    bool isStartLongPressed() const;
 };
 
-#endif // !TIMECALCULATOR_HPP
+#endif // !Buttons_HPP
