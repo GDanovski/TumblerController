@@ -20,42 +20,54 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+#ifndef Motor_HPP
+#define Motor_HPP
+
 #include "FlashDrv.hpp"
-#include "DigitalDisplay.hpp"
 #include "TimeCalculator.hpp"
-#include "Buttons.hpp"
-#include "Motor.hpp"
-#include "SpeedController.hpp"
 
-FlashDrv flashDrv{};
-DigitalDisplay digitalDisplay{};
-TimeCalculator timeCalculator{flashDrv};
-Buttons buttons{timeCalculator, flashDrv};
-Motor motor{};
-SpeedController speedController{};
+class Motor {
+  public:
+    /**
+       @brief Construct a new Motor object
 
-void setup() {
-  Serial.begin(115200);
-  while (!Serial) {
-    ; // wait for serial port to connect. Needed for native USB port only
-  }
-  Serial.print("Start days: ");
-  Serial.print(timeCalculator.getDays());
-  Serial.print("\n");
-  delay(1000);
-}
+    */
+    Motor();
+    /**
+       @brief Delete default copy constructor
 
-int velocity = 0;
-void loop() {
-  int days = timeCalculator.getDays();
-  bool timerRunning = timeCalculator.calculate();
-  digitalDisplay.showValue(days);
-  buttons.checkButtons(days);
+    */
+    Motor(Motor&) = delete;
+    /**
+       @brief Delete default move constructor
 
-  if (buttons.isTumblerStarted() && timerRunning){
-    motor.setSpeed(speedController.getValue());
-  }
-  else {
-    motor.setSpeed(0);
-  }
-}
+    */
+    Motor(Motor&&) = delete;
+    /**
+       @brief Destroy the Motor object
+
+    */
+    ~Motor() = default;
+
+    //Operators
+    /**
+       @brief Delete default copy assignment operator
+
+       @return Motor&
+    */
+    Motor& operator=(Motor&) = delete;
+    /**
+       @brief Delete default move assignment operator
+
+       @return Motor&
+    */
+    Motor& operator=(Motor&&) = delete;
+
+    void setSpeed(unsigned int motorSpeed);
+
+  private:
+    static const int kSpeedMax = 255;
+    int _speed = 0;
+};
+
+#endif // !Motor_HPP
