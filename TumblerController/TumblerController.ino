@@ -45,7 +45,6 @@ void setup() {
   delay(1000);
 }
 
-int velocity = 0;
 void loop() {
   int days = timeCalculator.getDays();
   bool timerRunning = timeCalculator.calculate();
