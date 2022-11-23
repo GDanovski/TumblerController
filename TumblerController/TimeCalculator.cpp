@@ -24,8 +24,8 @@
 #include "TimeCalculator.hpp"
 
 TimeCalculator::TimeCalculator(FlashDrv& flashDrv) : _flashDrv(flashDrv) {
-  _days = _flashDrv.read(kPassDaysFlashAddress);
-  _hours = _flashDrv.read(kPassHoursFlashAddress);
+  _days = _flashDrv.read(FlashEntries::days);
+  _hours = _flashDrv.read(FlashEntries::hours);
   _lastTime_ms = millis();
 }
 
@@ -49,6 +49,7 @@ bool TimeCalculator::calculate() {
 
     if (_lastTime_ms > time_ms) {
       storeToFlash();
+      _flashDrv.entryUpdate();
       delay(1000);
       reset();  // Reset if overflow is detected
     }
@@ -61,9 +62,11 @@ bool TimeCalculator::calculate() {
         _hours = 0;
         if (_days > 0) {
           _days--;
+          _flashDrv.store(FlashEntries::days, _days);
         }
       }
-      storeToFlash();
+      _flashDrv.store(FlashEntries::hours, _hours);
+      _flashDrv.entryUpdate();
     }
   }
 
@@ -71,6 +74,6 @@ bool TimeCalculator::calculate() {
 }
 
 void TimeCalculator::storeToFlash() {
-  _flashDrv.store(kPassDaysFlashAddress, _days);
-  _flashDrv.store(kPassHoursFlashAddress, _hours);
+  _flashDrv.store(FlashEntries::days, _days);
+  _flashDrv.store(FlashEntries::hours, _hours);
 }

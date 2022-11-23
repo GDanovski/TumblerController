@@ -29,7 +29,7 @@ Buttons::Buttons(TimeCalculator& timeCalculator, FlashDrv& flashDrv) : _timeCalc
   pinMode(pinIncrement, INPUT_PULLUP);
   pinMode(pinDecrement, INPUT_PULLUP);
 
-  _tumblerStarted = _flashDrv.read(kActiveTumblingAddress);
+  _tumblerStarted = _flashDrv.read(FlashEntries::isRunning);
 }
 
 bool Buttons::isIncrementPressed() const {
@@ -83,14 +83,17 @@ void Buttons::checkButtons(int days) {
     if (isStartPressed()) {
       _tumblerStarted = !_tumblerStarted;
       _timeCalculator.storeToFlash();
-      _flashDrv.store(kActiveTumblingAddress, _tumblerStarted);
+      _flashDrv.store(FlashEntries::isRunning, _tumblerStarted);
+      _flashDrv.entryUpdate();
     }
 
     while(isStartLongPressed()){
       if(_timeCalculator.getDays() > 0){
         _timeCalculator.setDays(0);
         _tumblerStarted = false;
-        _flashDrv.store(kActiveTumblingAddress, _tumblerStarted);
+        _flashDrv.store(FlashEntries::isRunning, _tumblerStarted);
+        _timeCalculator.storeToFlash();
+        _flashDrv.entryUpdate();
         return;
       }
       
