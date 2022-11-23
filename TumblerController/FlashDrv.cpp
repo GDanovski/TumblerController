@@ -24,12 +24,58 @@
 #include <EEPROM.h>
 #include "FlashDrv.hpp"
 
-FlashDrv::FlashDrv() {}
+FlashDrv::FlashDrv() {
+  findIndex();
+  // read old record
+  for (int i = 0; i < FlashEntries::totalLength; i++) {
+    _values[i] = static_cast<int>(EEPROM.read(_index + i));
+  }
+}
 
 void FlashDrv::store(int addr, int value) {
-  EEPROM.write(addr, value);
+  // read old record
+  _values[addr] = value;
 }
 
 int FlashDrv::read(int addr) {
-  return static_cast<int>(EEPROM.read(addr));
+  return _values[addr];
+}
+
+void FlashDrv::clearIndex() {
+  for (int i = 0 ; i < EEPROM.length() ; i++) {
+    EEPROM.update(i, 0);
+  }
+  _index = 0;
+  EEPROM.update(FlashEntries::header, true);
+}
+
+void FlashDrv::findIndex() {
+  _index = 0;
+  for (int i = 0 ; i < EEPROM.length() ; i += FlashEntries::totalLength) {
+    int val = static_cast<int>(EEPROM.read(i + FlashEntries::header));
+
+    if (val != 0) {
+      _index = i;
+    } else {
+      return;
+    }
+  }
+}
+
+void FlashDrv::entryUpdate() {
+  _values[FlashEntries::header] = true;
+  // recalculate index in flash
+  _index += FlashEntries::totalLength;
+  if (_index + FlashEntries::totalLength > EEPROM.length()) {
+    clearIndex();
+  }
+
+  // update new record
+  for (int i = 0; i < FlashEntries::totalLength; i++) {
+    EEPROM.update(_index + i, _values[i]);
+  }
+
+  Serial.print("Successful entry update at address: ");
+  Serial.print(_index);
+  Serial.print("\n");
 }

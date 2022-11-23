@@ -63,6 +63,9 @@ void DigitalDisplay::showValue(int value) {
   digitalWrite(DigitalDisplayConfig::pinDS1, HIGH);
   digitalWrite(DigitalDisplayConfig::pinDS2, LOW);
   delay(timeToShowDigit_ms);
+
+  digitalWrite(DigitalDisplayConfig::pinDS1, HIGH);
+  digitalWrite(DigitalDisplayConfig::pinDS2, HIGH);
 }
 
 void DigitalDisplay::setDigit(int value) {

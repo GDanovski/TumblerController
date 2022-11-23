@@ -23,9 +23,13 @@
 #ifndef FlashDrv_HPP
 #define FlashDrv_HPP
 
-static const int kPassHoursFlashAddress = 0;
-static const int kPassDaysFlashAddress = 1;
-static const int kActiveTumblingAddress = 2;
+enum FlashEntries : int {
+  hours = 0,
+  days,
+  isRunning,
+  header,
+  totalLength
+};
 
 class FlashDrv {
   public:
@@ -79,6 +83,13 @@ class FlashDrv {
     */
     int read(int addr);
 
+    void entryUpdate();
+private:
+    int _index = 0;
+    int _values[FlashEntries::totalLength] = {0};
+    
+    void clearIndex();
+    void findIndex();
 };
 
 #endif // !FlashDrv_HPP
