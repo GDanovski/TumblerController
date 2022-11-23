@@ -20,42 +20,20 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include "FlashDrv.hpp"
-#include "DigitalDisplay.hpp"
-#include "TimeCalculator.hpp"
-#include "Buttons.hpp"
-#include "Motor.hpp"
+#include <Arduino.h>
+#include "PinMap.hpp"
 #include "SpeedController.hpp"
 
-FlashDrv flashDrv{};
-DigitalDisplay digitalDisplay{};
-TimeCalculator timeCalculator{flashDrv};
-Buttons buttons{timeCalculator, flashDrv};
-Motor motor{};
-SpeedController speedController{};
-
-void setup() {
-  Serial.begin(115200);
-  while (!Serial) {
-    ; // wait for serial port to connect. Needed for native USB port only
-  }
-  Serial.print("Start days: ");
-  Serial.print(timeCalculator.getDays());
-  Serial.print("\n");
-  delay(1000);
+SpeedController::SpeedController() {
 }
 
-int velocity = 0;
-void loop() {
-  int days = timeCalculator.getDays();
-  bool timerRunning = timeCalculator.calculate();
-  digitalDisplay.showValue(days);
-  buttons.checkButtons(days);
+int SpeedController::getValue() {
+  unsigned long sensorValue = analogRead(pinSpeed);
 
-  if (buttons.isTumblerStarted() && timerRunning){
-    motor.setSpeed(speedController.getValue());
-  }
-  else {
-    motor.setSpeed(0);
-  }
+  _lastValue = (_lastValue / 100) * (100 - kWeight) + sensorValue * kWeight;
+  sensorValue = _lastValue / 100;
+
+  sensorValue = map(sensorValue, 0, kMaxSpeed * 4, kMinSpeed, kMaxSpeed);
+
+  return sensorValue;
 }

@@ -60,5 +60,7 @@ struct DigitalDisplayConfig {
 static const int pinStart = A0;       ///< pin dot postatic const int - not used
 static const int pinIncrement = A1;   ///< pin dot postatic const int - not used
 static const int pinDecrement = A2;   ///< pin dot postatic const int - not used
+static const int pinSpeed = A3;       ///< pin dot postatic const int - not used
+static const int pinMotor = 11;       ///< pin dot postatic const int - not used
 
 #endif // !PINMAP_HPP
