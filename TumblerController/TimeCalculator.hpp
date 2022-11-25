@@ -87,7 +87,7 @@ class TimeCalculator {
 
   private:
     static const int kMaxDays = 99;
-    static const unsigned long kMsInHour = 1000u * 60u * 60u;
+    static const unsigned long kMsInHour = 3600000u;
     static const unsigned long kHourInDay = 24u;
 
     FlashDrv& _flashDrv;
