@@ -37,6 +37,6 @@ void Motor::setSpeed(unsigned int motorSpeed) {
 
   if (motorSpeed != _speed) {
     _speed = motorSpeed;
-    analogWrite(pinMotor, _speed);
+    analogWrite(pinMotor, kSpeedMax - _speed);
   }
 }

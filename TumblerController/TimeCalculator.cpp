@@ -67,6 +67,12 @@ bool TimeCalculator::calculate() {
       }
       _flashDrv.store(FlashEntries::hours, _hours);
       _flashDrv.entryUpdate();
+
+      Serial.print("Time left - ");
+      Serial.print(getDays() - 1);
+      Serial.print(" days and ");
+      Serial.print((kHourInDay - _hours));
+      Serial.print("hours\n");
     }
   }
 

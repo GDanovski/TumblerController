@@ -51,7 +51,7 @@ void loop() {
   digitalDisplay.showValue(days);
   buttons.checkButtons(days);
 
-  if (buttons.isTumblerStarted() && timerRunning){
+  if (buttons.isTumblerStarted() && timerRunning) {
     motor.setSpeed(speedController.getValue());
   }
   else {

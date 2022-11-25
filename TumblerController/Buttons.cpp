@@ -85,6 +85,10 @@ void Buttons::checkButtons(int days) {
       _timeCalculator.storeToFlash();
       _flashDrv.store(FlashEntries::isRunning, _tumblerStarted);
       _flashDrv.entryUpdate();
+
+      Serial.print("Tumbler running: ");
+      Serial.print(_tumblerStarted);
+      Serial.print("\n");
     }
 
     while(isStartLongPressed()){
@@ -94,6 +98,8 @@ void Buttons::checkButtons(int days) {
         _flashDrv.store(FlashEntries::isRunning, _tumblerStarted);
         _timeCalculator.storeToFlash();
         _flashDrv.entryUpdate();
+
+        Serial.print("Timer reset\n");
         return;
       }
       
