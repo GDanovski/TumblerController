@@ -27,7 +27,7 @@
 Motor::Motor() {
   _speed = 0;
   pinMode(pinMotor, OUTPUT);
-  setSpeed(0);
+  analogWrite(pinMotor, kSpeedMax - _speed);
 }
 
 void Motor::setSpeed(unsigned int motorSpeed) {
